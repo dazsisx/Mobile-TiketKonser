@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BrandLogo, ErrorBanner, Field, PrimaryButton } from '@/components/ui/mobile-ui';
+import { useAuth } from '@/contexts/AuthContext';
 import { registerUser } from '@/utils/api';
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const { showSplash, hideSplash } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -43,8 +45,12 @@ export default function RegisterScreen() {
         password,
         ...(phone.trim() ? { no_telepon: phone.trim() } : {}),
       });
+      showSplash('Akun berhasil dibuat. Mengalihkan...');
+      await new Promise((resolve) => setTimeout(resolve, 800));
       router.replace('/(auth)/login');
+      setTimeout(() => hideSplash(), 400);
     } catch (caught) {
+      hideSplash();
       setError(caught instanceof Error ? caught.message : 'Pendaftaran gagal. Coba lagi.');
     } finally {
       setLoading(false);

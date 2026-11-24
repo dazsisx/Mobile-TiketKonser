@@ -9,7 +9,7 @@ import { loginUser } from '@/utils/api';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, showSplash, hideSplash } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -29,9 +29,14 @@ export default function LoginScreen() {
       if (data.role !== 'pelanggan') {
         throw new Error('Aplikasi ini hanya untuk akun pelanggan.');
       }
+      // Tampilkan splash loading screen sesudah login
+      showSplash('Menyiapkan akun kamu...');
       await login(data);
+      await new Promise((resolve) => setTimeout(resolve, 800));
       router.replace('/(tabs)');
+      setTimeout(() => hideSplash(), 400);
     } catch (caught) {
+      hideSplash();
       setError(caught instanceof Error ? caught.message : 'Gagal masuk. Coba lagi.');
     } finally {
       setLoading(false);

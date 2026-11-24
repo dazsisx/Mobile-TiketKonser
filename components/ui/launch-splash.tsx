@@ -15,7 +15,11 @@ import { useEffect } from 'react';
 
 import { BrandLogo } from '@/components/ui/mobile-ui';
 
-export default function LaunchSplash() {
+export default function LaunchSplash({
+  message = 'Menyiapkan pengalamanmu...',
+}: {
+  message?: string;
+}) {
   const rotation = useSharedValue(0);
   const float = useSharedValue(0);
 
@@ -50,25 +54,31 @@ export default function LaunchSplash() {
   return (
     <Animated.View
       accessibilityLabel="DR Star sedang dimuat"
-      exiting={FadeOut.duration(300)}
+      entering={FadeIn.duration(250)}
+      exiting={FadeOut.duration(350)}
       style={styles.screen}>
       <View style={styles.glow} />
       <View style={styles.center}>
-        <Animated.View entering={FadeIn.duration(700)} style={[styles.orbit, orbitStyle]}>
+        <Animated.View entering={FadeIn.duration(600)} style={[styles.orbit, orbitStyle]}>
           <View style={styles.orbitDot} />
         </Animated.View>
-        <Animated.View entering={FadeInUp.springify().damping(16).stiffness(105)} style={[styles.logoCard, logoStyle]}>
-          <BrandLogo size={64} />
+        <Animated.View
+          entering={FadeInUp.springify().damping(16).stiffness(105)}
+          style={[styles.logoCard, logoStyle]}>
+          <BrandLogo size={66} />
         </Animated.View>
-        <Animated.View entering={FadeInUp.delay(180).duration(650)} style={styles.copy}>
+        <Animated.View entering={FadeInUp.delay(150).duration(600)} style={styles.copy}>
           <Text style={styles.brand}>DR STAR</Text>
           <Text style={styles.tagline}>Temukan event. Ciptakan cerita.</Text>
         </Animated.View>
       </View>
-      <Animated.View entering={FadeIn.delay(420).duration(500)} style={styles.loading}>
+      <Animated.View entering={FadeIn.delay(300).duration(400)} style={styles.loading}>
         <ActivityIndicator size="small" color="#0F766E" />
-        <Text style={styles.loadingText}>Menyiapkan pengalamanmu</Text>
+        <Text style={styles.loadingText}>{message}</Text>
       </Animated.View>
+      <View style={styles.footer}>
+        <Text style={styles.version}>DR Star Mobile v1.0.0</Text>
+      </View>
       <View style={styles.bottomAccent} />
     </Animated.View>
   );
@@ -77,8 +87,8 @@ export default function LaunchSplash() {
 const styles = StyleSheet.create({
   screen: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 1000,
-    elevation: 20,
+    zIndex: 9999,
+    elevation: 50,
     backgroundColor: '#FFFBF5',
     alignItems: 'center',
     justifyContent: 'center',
@@ -86,11 +96,11 @@ const styles = StyleSheet.create({
   },
   glow: {
     position: 'absolute',
-    width: 310,
-    height: 310,
-    borderRadius: 155,
+    width: 320,
+    height: 320,
+    borderRadius: 160,
     backgroundColor: '#ECFDF5',
-    opacity: 0.8,
+    opacity: 0.85,
   },
   center: {
     alignItems: 'center',
@@ -99,17 +109,17 @@ const styles = StyleSheet.create({
   },
   orbit: {
     position: 'absolute',
-    width: 212,
-    height: 212,
-    borderRadius: 106,
-    borderWidth: 1,
+    width: 216,
+    height: 216,
+    borderRadius: 108,
+    borderWidth: 1.5,
     borderColor: '#B5D9C9',
     borderStyle: 'dashed',
   },
   orbitDot: {
     position: 'absolute',
-    top: 20,
-    right: 24,
+    top: 22,
+    right: 25,
     width: 12,
     height: 12,
     borderRadius: 6,
@@ -118,49 +128,61 @@ const styles = StyleSheet.create({
     borderColor: '#FFFBF5',
   },
   logoCard: {
-    width: 184,
-    height: 146,
+    width: 188,
+    height: 148,
     borderRadius: 42,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#155E52',
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.11,
+    shadowOpacity: 0.12,
     shadowRadius: 24,
-    elevation: 7,
+    elevation: 8,
   },
   copy: {
     alignItems: 'center',
-    marginTop: 31,
+    marginTop: 28,
   },
   brand: {
     color: '#155E52',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '900',
-    letterSpacing: 4,
+    letterSpacing: 4.5,
   },
   tagline: {
     color: '#75827C',
     fontSize: 12,
     marginTop: 7,
+    fontWeight: '500',
   },
   loading: {
     position: 'absolute',
-    bottom: 76,
+    bottom: 84,
     alignItems: 'center',
     gap: 10,
   },
   loadingText: {
     color: '#87918B',
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '600',
     letterSpacing: 0.3,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 24,
+    alignItems: 'center',
+  },
+  version: {
+    color: '#B5BFBA',
+    fontSize: 10,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
   bottomAccent: {
     position: 'absolute',
     bottom: 0,
-    width: 62,
+    width: 68,
     height: 4,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,

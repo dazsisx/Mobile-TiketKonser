@@ -19,7 +19,7 @@ import { fetchProfile, updateProfile, uploadAvatar } from '@/utils/api';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, updateUser, logout } = useAuth();
+  const { user, updateUser, logout, showSplash, hideSplash } = useAuth();
   const [name, setName] = useState(user?.nama ?? '');
   const [phone, setPhone] = useState(user?.no_telepon ?? '');
   const [loading, setLoading] = useState(true);
@@ -109,9 +109,13 @@ export default function ProfileScreen() {
 
   async function confirmSignOut() {
     try {
+      showSplash('Keluar dari akun...');
       await logout();
+      await new Promise((resolve) => setTimeout(resolve, 600));
       router.replace('/(auth)/welcome');
+      setTimeout(() => hideSplash(), 400);
     } catch (caught) {
+      hideSplash();
       setError(caught instanceof Error ? caught.message : 'Gagal keluar dari akun.');
       setConfirmLogout(false);
     }
@@ -200,16 +204,34 @@ export default function ProfileScreen() {
 
         {confirmLogout ? (
           <View style={styles.confirmCard}>
-            <Text style={styles.confirmTitle}>Keluar dari akun ini?</Text>
-            <Text style={styles.confirmText}>Kamu perlu masuk lagi untuk melihat pesanan dan wishlist.</Text>
+            <View style={styles.confirmHeader}>
+              <View style={styles.confirmIconWrap}>
+                <MaterialIcons name="logout" size={20} color="#DC2626" />
+              </View>
+              <View style={styles.confirmHeaderText}>
+                <Text style={styles.confirmTitle}>Keluar dari akun ini?</Text>
+                <Text style={styles.confirmText}>Kamu perlu masuk lagi untuk melihat pesanan dan wishlist.</Text>
+              </View>
+            </View>
             <View style={styles.confirmActions}>
-              <Pressable onPress={() => setConfirmLogout(false)} style={styles.cancelButton}><Text style={styles.cancelText}>Batal</Text></Pressable>
-              <Pressable onPress={() => void confirmSignOut()} style={styles.logoutButton}><Text style={styles.logoutText}>Keluar</Text></Pressable>
+              <Pressable
+                onPress={() => setConfirmLogout(false)}
+                style={({ pressed }) => [styles.cancelButton, pressed && { opacity: 0.7 }]}>
+                <Text style={styles.cancelText}>Batal</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => void confirmSignOut()}
+                style={({ pressed }) => [styles.confirmSignOutButton, pressed && { opacity: 0.85 }]}>
+                <MaterialIcons name="logout" size={15} color="#FFFFFF" />
+                <Text style={styles.confirmSignOutText}>Ya, Keluar</Text>
+              </Pressable>
             </View>
           </View>
         ) : (
-          <Pressable onPress={() => setConfirmLogout(true)} style={styles.logoutButton}>
-            <MaterialIcons name="logout" size={17} color="#B42318" />
+          <Pressable
+            onPress={() => setConfirmLogout(true)}
+            style={({ pressed }) => [styles.logoutButton, pressed && { opacity: 0.8 }]}>
+            <MaterialIcons name="logout" size={18} color="#DC2626" />
             <Text style={styles.logoutText}>Keluar dari akun</Text>
           </Pressable>
         )}
@@ -242,12 +264,105 @@ const styles = StyleSheet.create({
   menuCopy: { flex: 1 },
   menuTitle: { color: '#1F2937', fontSize: 11, fontWeight: '800' },
   menuSubtitle: { color: '#89938E', fontSize: 9, marginTop: 3 },
-  logoutButton: { minHeight: 45, borderWidth: 1, borderColor: '#FECACA', backgroundColor: '#FFFFFF', borderRadius: 13, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7 },
-  logoutText: { color: '#B42318', fontSize: 11, fontWeight: '900' },
-  confirmCard: { padding: 14, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#FECACA', borderRadius: 14 },
-  confirmTitle: { color: '#1F2937', fontSize: 13, fontWeight: '900' },
-  confirmText: { color: '#6B7280', fontSize: 10, lineHeight: 16, marginTop: 5 },
-  confirmActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 9, marginTop: 12 },
-  cancelButton: { paddingHorizontal: 13, paddingVertical: 8, borderRadius: 10, backgroundColor: '#F3F4F6' },
-  cancelText: { color: '#6B7280', fontSize: 10, fontWeight: '800' },
+  logoutButton: {
+    minHeight: 48,
+    borderWidth: 1,
+    borderColor: '#FCA5A5',
+    backgroundColor: '#FEF2F2',
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 8,
+  },
+  logoutText: {
+    color: '#DC2626',
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  confirmCard: {
+    padding: 16,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    borderRadius: 16,
+    shadowColor: '#DC2626',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 2,
+    marginTop: 8,
+  },
+  confirmHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  confirmIconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: '#FEE2E2',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 2,
+  },
+  confirmHeaderText: {
+    flex: 1,
+  },
+  confirmTitle: {
+    color: '#1F2937',
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  confirmText: {
+    color: '#6B7280',
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 4,
+  },
+  confirmActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  cancelButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 10,
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelText: {
+    color: '#4B5563',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  confirmSignOutButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 10,
+    backgroundColor: '#DC2626',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    shadowColor: '#DC2626',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  confirmSignOutText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
+  },
 });

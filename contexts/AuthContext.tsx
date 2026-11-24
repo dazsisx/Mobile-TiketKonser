@@ -12,6 +12,10 @@ type AuthContextValue = {
   user: AuthUser | null;
   isLoading: boolean;
   startupError: string | null;
+  isSplashVisible: boolean;
+  splashMessage: string;
+  showSplash: (message?: string) => void;
+  hideSplash: () => void;
   login: (data: AuthData) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (user: AuthUser) => Promise<void>;
@@ -24,8 +28,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [startupError, setStartupError] = useState<string | null>(null);
 
+  // Splash loading screen state
+  const [isSplashVisible, setIsSplashVisible] = useState(true);
+  const [splashMessage, setSplashMessage] = useState('Menyiapkan pengalamanmu...');
+
+  const showSplash = useCallback((message = 'Menyiapkan pengalamanmu...') => {
+    setSplashMessage(message);
+    setIsSplashVisible(true);
+  }, []);
+
+  const hideSplash = useCallback(() => {
+    setIsSplashVisible(false);
+  }, []);
+
   useEffect(() => {
     let active = true;
+    const startTime = Date.now();
 
     async function restoreSession() {
       try {
@@ -40,7 +58,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
         if (active) setUser(storedUser);
-        if (active) setIsLoading(false);
 
         try {
           const currentUser = await fetchProfile();
@@ -68,7 +85,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           );
         }
       } finally {
-        if (active) setIsLoading(false);
+        // Biarkan splash screen tampil minimal 1.5 detik agar terlihat jelas oleh user
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 1500 - elapsed);
+        setTimeout(() => {
+          if (active) {
+            setIsLoading(false);
+            setIsSplashVisible(false);
+          }
+        }, remaining);
       }
     }
 
@@ -98,8 +123,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, isLoading, startupError, login, logout, updateUser }),
-    [user, isLoading, startupError, login, logout, updateUser]
+    () => ({
+      user,
+      isLoading,
+      startupError,
+      isSplashVisible,
+      splashMessage,
+      showSplash,
+      hideSplash,
+      login,
+      logout,
+      updateUser,
+    }),
+    [user, isLoading, startupError, isSplashVisible, splashMessage, showSplash, hideSplash, login, logout, updateUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
