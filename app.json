@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Mobile-Tiket",
-    "slug": "Mobile-Tiket",
+    "name": "DR Star",
+    "slug": "drstar-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -30,15 +30,24 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/logobaru.png",
+          "imageWidth": 230,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#FFFBF5",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#FFFBF5"
           }
         }
-      ]
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Izinkan DR Star memilih foto profil dari galeri.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

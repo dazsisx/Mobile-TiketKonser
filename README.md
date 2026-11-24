@@ -1,50 +1,16 @@
-# Welcome to your Expo app 👋
+# DR Star Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo app for customer accounts. It uses the same Express API as the web app for authentication, events, wishlists, profiles, orders, ticket QR codes, and Midtrans checkout.
 
-## Get started
+## Run locally
 
-1. Install dependencies
+1. Copy `.env.example` to `.env` and set `EXPO_PUBLIC_API_URL` to the backend URL ending in `/api`.
+   - Android emulator: `http://10.0.2.2:5000/api`
+   - iOS simulator: `http://localhost:5000/api`
+   - Physical device: use the computer's LAN IP, or an HTTPS backend URL.
+2. Start the backend from `../be` and make sure it is reachable from the device.
+3. Run `npm install`, then `npx expo start` from this directory.
 
-   ```bash
-   npm install
-   ```
+The app is for `pelanggan` accounts only. On first launch it shows the branded welcome and sign-in/sign-up flow. A successful sign-in is stored in the device secure store; the next launch keeps the branded splash and opens the home screen. Sign-out clears that saved session.
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The startup screen has an animated in-app splash, so it remains visible in Expo Go while the saved session is checked. The matching native splash image is copied from `../fe/public/logobaru.png`; changes to native splash branding require rebuilding the development or release app.
